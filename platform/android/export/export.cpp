@@ -1502,6 +1502,11 @@ public:
 			return ERR_SKIP;
 		}
 
+		//export_temp
+		if (ep.step("Exporting APK", 0)) {
+			return ERR_SKIP;
+		}
+
 		const bool use_remote = (p_debug_flags & DEBUG_FLAG_REMOTE_DEBUG) || (p_debug_flags & DEBUG_FLAG_DUMB_CLIENT);
 		const bool use_reverse = devices[p_device].api_level >= 21;
 

@@ -1073,6 +1073,8 @@ Error EditorExportPlatform::save_zip(const Ref<EditorExportPreset> &p_preset, co
 
 	EditorProgress ep("savezip", TTR("Packing"), 102, true);
 
+	//FileAccess *tmp = FileAccess::open(tmppath,FileAccess::WRITE);
+
 	FileAccess *src_f;
 	zlib_filefunc_def io = zipio_create_io_from_file(&src_f);
 	zipFile zip = zipOpen2(p_path.utf8().get_data(), APPEND_STATUS_CREATE, NULL, &io);
