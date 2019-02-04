@@ -25,15 +25,22 @@ SConscript("videodecoder/SCsub")
 from platform_methods import run_in_subprocess
 import gdnative_builders
 
+#_, gensource = env_gdnative.CommandNoCache(['include/gdnative_api_struct.gen.h', 'gdnative_api_struct.gen.cpp'],
+#                                'gdnative_api.json', run_in_subprocess(gdnative_builders.build_gdnative_api_struct))
+
 _, gensource = env_gdnative.CommandNoCache(['include/gdnative_api_struct.gen.h', 'gdnative_api_struct.gen.cpp'],
-                               'gdnative_api.json', run_in_subprocess(gdnative_builders.build_gdnative_api_struct))
+                                'gdnative_api.json', 'python -c "import gdnative_builders; gdnative_builders.build_gdnative_api_struct $SOURCE $TARGET $env_gdnative"')
+
+
 env_gdnative.add_source_files(env.modules_sources, [gensource])
 
 env.use_ptrcall = True
 
 
 if ARGUMENTS.get('gdnative_wrapper', False):
-    gensource, = env_gdnative.CommandNoCache('gdnative_wrapper_code.gen.cpp', 'gdnative_api.json', run_in_subprocess(gdnative_builders.build_gdnative_wrapper_code))
+    # gensource, = env_gdnative.CommandNoCache('gdnative_wrapper_code.gen.cpp', 'gdnative_api.json', run_in_subprocess(gdnative_builders.build_gdnative_wrapper_code))
+    gensource, = env_gdnative.CommandNoCache('gdnative_wrapper_code.gen.cpp', 'gdnative_api.json', 'gdnative_api.json', 'python -c "import gdnative_builders; gdnative_builders.build_gdnative_wrapper_code $SOURCE $TARGET $env_gdnative"'))
+
 
     gd_wrapper_env = env.Clone()
     gd_wrapper_env.Append(CPPPATH=['#modules/gdnative/include/'])
