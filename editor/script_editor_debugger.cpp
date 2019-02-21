@@ -2053,6 +2053,12 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 		tabs->add_child(dbg);
 	}
 
+	{ //watches
+		watches = memnew(ScriptWatches);
+		watches->set_name("Watches");
+		tabs->add_child(watches);
+	}
+
 	{ //errors
 		VBoxContainer *errvb = memnew(VBoxContainer);
 		errvb->set_name(TTR("Errors"));

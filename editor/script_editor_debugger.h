@@ -35,6 +35,7 @@
 #include "core/io/tcp_server.h"
 #include "editor/editor_inspector.h"
 #include "editor/property_editor.h"
+#include "editor/script_watches.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 
@@ -130,6 +131,7 @@ class ScriptEditorDebugger : public Control {
 
 	Tree *stack_dump;
 	EditorInspector *inspector;
+	ScriptWatches *watches;
 
 	Ref<TCP_Server> server;
 	Ref<StreamPeerTCP> connection;
