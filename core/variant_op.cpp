@@ -1518,7 +1518,14 @@ void Variant::set_named(const StringName &p_index, const Variant &p_value, bool 
 			} else if (ScriptDebugger::get_singleton() && _get_obj().ref.is_null() && !ObjectDB::instance_validate(_get_obj().obj)) {
 				break;
 			}
-
+#else
+			if (unlikely(!_get_obj().obj)) {
+				String msg = "Trying to access property '" + String(p_index) + "' in a null instance.";
+				throw msg;
+			} else if (unlikely(_get_obj().ref.is_null() && !ObjectDB::instance_validate(_get_obj().obj))) {
+				String msg = "Trying to access property '" + String(p_index) + "' in previously freed instance.";
+				throw msg;
+			}
 #endif
 			_get_obj().obj->set(p_index, p_value, &valid);
 
@@ -1694,11 +1701,9 @@ Variant Variant::get_named(const StringName &p_index, bool *r_valid) const {
 			if (unlikely(!_get_obj().obj)) {
 				String msg = "Trying to get property \"" + String(p_index) + "\" from a null instance.";
 				throw msg;
-			} else {
-				if (unlikely(_get_obj().ref.is_null() && !ObjectDB::instance_validate(_get_obj().obj))) {
-					String msg = "Trying to get property \"" + String(p_index) + "\" from a stray pointer object.";
-					throw msg;
-				}
+			} else if (unlikely(_get_obj().ref.is_null() && !ObjectDB::instance_validate(_get_obj().obj))) {
+				String msg = "Trying to get property \"" + String(p_index) + "\" from a stray pointer object.";
+				throw msg;
 			}
 #endif
 
@@ -2189,6 +2194,11 @@ void Variant::set(const Variant &p_index, const Variant &p_value, bool *r_valid)
 						return;
 					}
 				}
+#else
+				if (unlikely(_get_obj().ref.is_null() && !ObjectDB::instance_validate(_get_obj().obj))) {
+					String msg = "Trying to access property '" + String(p_index) + "' in previously freed instance.";
+					throw msg;
+				}
 #endif
 
 				if (p_index.get_type() != Variant::STRING) {
@@ -2562,6 +2572,14 @@ Variant Variant::get(const Variant &p_index, bool *r_valid) const {
 						return "Attempted get on stray pointer.";
 					}
 				}
+#else
+			if (unlikely(!_get_obj().obj)) {
+				String msg = "Trying to access property '" + String(p_index) + "' in a null instance.";
+				throw msg;
+			} else if (unlikely(_get_obj().ref.is_null() && !ObjectDB::instance_validate(_get_obj().obj))) {
+				String msg = "Trying to access property '" + String(p_index) + "' in previously freed instance.";
+				throw msg;
+			}
 #endif
 
 				if (p_index.get_type() != Variant::STRING) {
