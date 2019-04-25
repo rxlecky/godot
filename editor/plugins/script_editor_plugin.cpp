@@ -2033,8 +2033,8 @@ Error ScriptEditor::_save_text_file(Ref<TextFile> p_text_file, const String &p_p
 	return OK;
 }
 
-bool ScriptEditor::open_current_script_in_external_editor() {
-	return open_script_in_external_editor(_get_current_script(), 0, 0);
+bool ScriptEditor::open_current_script_in_external_editor(int line, int column) {
+	return open_script_in_external_editor(_get_current_script(), line, column);
 }
 
 bool ScriptEditor::open_script_in_external_editor(const RES &p_resource, int p_line, int p_col) {
@@ -2086,7 +2086,6 @@ bool ScriptEditor::open_script_in_external_editor(const RES &p_resource, int p_l
 		return false;
 	WARN_PRINT("Couldn't open external text editor, using internal");
 }
-
 
 bool ScriptEditor::edit(const RES &p_resource, int p_line, int p_col, bool p_grab_focus) {
 
