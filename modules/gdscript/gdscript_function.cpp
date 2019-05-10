@@ -432,15 +432,16 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 	bool exit_ok = false;
 	bool yielded = false;
 #endif
-#define CATCH_CRASH_THROW catch (String exception) { \
-	String message = exception + "\nOn " + String(name) + " - " + _script->path + ":" + itos(line); \
-		if (Engine::get_singleton()->has_singleton("CrashThrow")) { \
-			Object *crash = Engine::get_singleton()->get_singleton_object("CrashThrow"); \
-			crash->call("Throw", message); \
-			GD_ERR_BREAK(1); \
-		} else { \
-			throw message.utf8().get_data(); \
-		} \
+#define CATCH_CRASH_THROW                                                                               \
+	catch (String exception) {                                                                          \
+		String message = exception + "\nOn " + String(name) + " - " + _script->path + ":" + itos(line); \
+		if (Engine::get_singleton()->has_singleton("CrashThrow")) {                                     \
+			Object *crash = Engine::get_singleton()->get_singleton_object("CrashThrow");                \
+			crash->call("Throw", message);                                                              \
+			GD_ERR_BREAK(1);                                                                            \
+		} else {                                                                                        \
+			throw message.utf8().get_data();                                                            \
+		}                                                                                               \
 	}
 
 #ifdef DEBUG_ENABLED
@@ -585,7 +586,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 				bool valid;
 				try {
 					dst->set(*index, *value, &valid);
-				} CATCH_CRASH_THROW
+				}
+				CATCH_CRASH_THROW
 
 #ifdef DEBUG_ENABLED
 				if (!valid) {
@@ -618,7 +620,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 #else
 				try {
 					*dst = src->get(*index, &valid);
-				} CATCH_CRASH_THROW
+				}
+				CATCH_CRASH_THROW
 
 #endif
 #ifdef DEBUG_ENABLED
@@ -653,7 +656,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 				bool valid;
 				try {
 					dst->set_named(*index, *value, &valid);
-				} CATCH_CRASH_THROW
+				}
+				CATCH_CRASH_THROW
 
 #ifdef DEBUG_ENABLED
 				if (!valid) {
@@ -686,7 +690,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 #else
 				try {
 					*dst = src->get_named(*index, &valid);
-				} CATCH_CRASH_THROW
+				}
+				CATCH_CRASH_THROW
 #endif
 #ifdef DEBUG_ENABLED
 				if (!valid) {
@@ -715,7 +720,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 #ifndef DEBUG_ENABLED
 				try {
 					ClassDB::set_property(p_instance->owner, *index, *src, &valid);
-				} CATCH_CRASH_THROW
+				}
+				CATCH_CRASH_THROW
 #else
 				bool ok = ClassDB::set_property(p_instance->owner, *index, *src, &valid);
 				if (!ok) {
@@ -741,7 +747,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 #ifndef DEBUG_ENABLED
 				try {
 					ClassDB::get_property(p_instance->owner, *index, *dst);
-				} CATCH_CRASH_THROW
+				}
+				CATCH_CRASH_THROW
 #else
 				bool ok = ClassDB::get_property(p_instance->owner, *index, *dst);
 				if (!ok) {
@@ -1110,7 +1117,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 
 						base->call_ptr(*methodname, (const Variant **)argptrs, argc, NULL, err);
 					}
-				} CATCH_CRASH_THROW;
+				}
+				CATCH_CRASH_THROW;
 #ifdef DEBUG_ENABLED
 				if (GDScriptLanguage::get_singleton()->profiling) {
 					function_call_time += OS::get_singleton()->get_ticks_usec() - call_time;
@@ -1175,7 +1183,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 
 				try {
 					GDScriptFunctions::call(func, (const Variant **)argptrs, argc, *dst, err);
-				} CATCH_CRASH_THROW
+				}
+				CATCH_CRASH_THROW
 
 #ifdef DEBUG_ENABLED
 				if (err.error != Variant::CallError::CALL_OK) {
@@ -1272,7 +1281,8 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 
 						OPCODE_BREAK;
 					}
-				} CATCH_CRASH_THROW
+				}
+				CATCH_CRASH_THROW
 
 				ip += 4 + argc;
 			}
