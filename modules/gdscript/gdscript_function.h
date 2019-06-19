@@ -78,15 +78,17 @@ struct GDScriptDataType {
 				}
 
 				Object *obj = p_variant.operator Object *();
-				if (!obj || !ObjectDB::instance_validate(obj)) {
-					return false;
-				}
-
-				if (!ClassDB::is_parent_class(obj->get_class_name(), native_type)) {
-					// Try with underscore prefix
-					StringName underscore_native_type = "_" + native_type;
-					if (!ClassDB::is_parent_class(obj->get_class_name(), underscore_native_type)) {
-						return false;
+				if (obj) {
+					if (!ObjectDB::instance_validate(obj)) {
+						ERR_EXPLAIN("Invalid object instance (already freed?)");
+						ERR_FAIL_V(false);
+					}
+					if (!ClassDB::is_parent_class(obj->get_class_name(), native_type)) {
+						// Try with underscore prefix
+						StringName underscore_native_type = "_" + native_type;
+						if (!ClassDB::is_parent_class(obj->get_class_name(), underscore_native_type)) {
+							return false;
+						}
 					}
 				}
 				return true;
