@@ -58,11 +58,7 @@ public:
 	_FORCE_INLINE_ real_t randfn(real_t mean = 0.0, real_t deviation = 1.0) { return randbase.randfn(mean, deviation); }
 
 	_FORCE_INLINE_ int randi_range(int from, int to) {
-		unsigned int ret = randbase.rand();
-		if (to < from)
-			return ret % (from - to + 1) + to;
-		else
-			return ret % (to - from + 1) + from;
+		return randbase.random(from, to);
 	}
 
 	RandomNumberGenerator();
