@@ -554,7 +554,12 @@ bool ScriptDebugger::_evaluate_watches(int p_stack_level, int p_watch) {
 	ExpressionContext context;
 
 	if (executing_script) {
-		script_owner_id = lang->debug_get_stack_level_instance(p_stack_level)->get_owner()->get_instance_id();
+		ERR_FAIL_NULL_V(lang, false);
+		ScriptInstance *instance = lang->debug_get_stack_level_instance(p_stack_level);
+		ERR_FAIL_NULL_V(instance, false);
+		Object *owner = instance->get_owner();
+		ERR_FAIL_NULL_V(owner, false);
+		script_owner_id = owner->get_instance_id();
 
 		// We need a way to check whether variable has been declared and initialized already. At the moment,
 		// the `debug_get_stack_level_locals` returns Variant::NIL for the uninitialized vars which is problematic.
