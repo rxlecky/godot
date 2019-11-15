@@ -324,6 +324,7 @@ public:
 	virtual void debug_get_stack_level_members(int p_level, List<String> *p_members, List<Variant> *p_values, int p_max_subitems = -1, int p_max_depth = -1) = 0;
 	virtual ScriptInstance *debug_get_stack_level_instance(int p_level) { return NULL; }
 	virtual void debug_get_globals(List<String> *p_globals, List<Variant> *p_values, int p_max_subitems = -1, int p_max_depth = -1) = 0;
+	virtual void debug_get_named_globals(List<String> *p_globals, List<Variant> *p_values) = 0;
 
 	struct StackInfo {
 		String file;

@@ -498,10 +498,14 @@ bool ScriptEditorDebugger::_execute_expression(const String &p_expression) {
 	ERR_FAIL_COND_V(connection.is_null(), false);
 	ERR_FAIL_COND_V(!connection->is_connected_to_host(), false);
 
-	TreeItem *ti = stack_dump->get_selected();
-	if (!p_expression.empty() && ti) {
-		Dictionary d = ti->get_metadata(0);
-		int frame = d["frame"];
+	if (!p_expression.empty()) {
+		int frame = -1;
+		TreeItem *ti = stack_dump->get_selected();
+		if (ti) {
+			Dictionary d = ti->get_metadata(0);
+			frame = d["frame"];
+		}
+
 		Array msg;
 		msg.push_back("execute_expression");
 		msg.push_back(frame);
@@ -514,7 +518,7 @@ bool ScriptEditorDebugger::_execute_expression(const String &p_expression) {
 }
 
 void ScriptEditorDebugger::_print_expression(const String &p_expression, const String &p_error_text) {
-	if (connection.is_null() || !connection->is_connected_to_host() || !breaked) {
+	if (connection.is_null() || !connection->is_connected_to_host()) {
 		evaluator->set_result(p_error_text, true);
 	} else {
 		if (!_execute_expression(p_expression)) {

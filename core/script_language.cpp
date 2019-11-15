@@ -435,9 +435,6 @@ void ScriptDebugger::set_watch_expression(int p_stack_level, int p_index, const 
 
 	WatchData &watch = watches.write[p_index];
 	ScriptLanguage *const lang = get_break_language();
-
-	ERR_FAIL_COND(lang->debug_get_stack_level_count() <= 0)
-
 	ExpressionContext context = get_expression_context(p_stack_level);
 
 	if (watch.expression->parse(p_expression, context.input_names) != OK) {
@@ -612,13 +609,19 @@ bool ScriptDebugger::_evaluate_watches(int p_stack_level, int p_watch) {
 }
 
 ScriptDebugger::ExpressionContext ScriptDebugger::get_expression_context(int p_stack_level) {
-	ERR_FAIL_INDEX_V(p_stack_level, break_lang->debug_get_stack_level_count(), ExpressionContext());
+	ERR_FAIL_COND_V(p_stack_level >= break_lang->debug_get_stack_level_count(), ExpressionContext());
 	ExpressionContext context;
 
 	List<Variant> vals;
 	List<String> vars;
 
-	break_lang->debug_get_stack_level_locals(p_stack_level, &vars, &vals);
+	if (p_stack_level > 0) {
+		context.base = break_lang->debug_get_stack_level_instance(p_stack_level)->get_owner();
+
+		break_lang->debug_get_stack_level_locals(p_stack_level, &vars, &vals);
+	}
+
+	break_lang->debug_get_named_globals(&vars, &vals);
 
 	ERR_FAIL_COND_V(vals.size() != vars.size(), ExpressionContext());
 
@@ -641,13 +644,11 @@ ScriptDebugger::ExpressionContext ScriptDebugger::get_expression_context(int p_s
 		} while (vars_it);
 	}
 
-	context.base = break_lang->debug_get_stack_level_instance(p_stack_level)->get_owner();
-
 	return context;
 }
 
 bool ScriptDebugger::evaluate_expression(int p_level, const String &p_expression, String &p_result) {
-	ERR_FAIL_INDEX_V(p_level, break_lang->debug_get_stack_level_count(), false);
+	ERR_FAIL_COND_V(p_level >= break_lang->debug_get_stack_level_count(), false);
 
 	Expression expr;
 	ExpressionContext context = get_expression_context(p_level);

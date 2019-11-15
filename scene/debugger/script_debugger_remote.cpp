@@ -877,6 +877,9 @@ void ScriptDebuggerRemote::_poll_events() {
 		} else if (command == "request_video_mem") {
 
 			_send_video_memory();
+		} else if (command == "execute_expression") {
+
+			_execute_expression(cmd[1], cmd[2]);
 		} else if (command == "watch_tracking") {
 
 			int index = cmd[1];
