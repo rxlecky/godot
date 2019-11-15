@@ -2676,6 +2676,8 @@ void VisualScriptLanguage::debug_get_globals(List<String> *p_locals, List<Varian
 	//no globals are really reachable in gdscript
 }
 
+void VisualScriptLanguage::debug_get_named_globals(List<String> *p_globals, List<Variant> *p_values) {}
+
 void VisualScriptLanguage::reload_all_scripts() {
 }
 void VisualScriptLanguage::reload_tool_script(const Ref<Script> &p_script, bool p_soft_reload) {

@@ -377,6 +377,9 @@ void PluginScriptLanguage::debug_get_globals(List<String> *p_locals, List<Varian
 	}
 }
 
+void PluginScriptLanguage::debug_get_named_globals(List<String> *p_globals, List<Variant> *p_values) {
+}
+
 void PluginScriptLanguage::reload_all_scripts() {
 	// TODO
 }
