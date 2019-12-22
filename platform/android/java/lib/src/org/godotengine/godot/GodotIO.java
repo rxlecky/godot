@@ -33,15 +33,22 @@ import android.content.*;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
+import java.io.InputStream;
+import java.io.IOException;
+import android.app.*;
+import android.util.SparseArray;
+import android.view.*;
+import android.view.inputmethod.InputMethodManager;
 import android.media.*;
 import android.net.Uri;
 import android.os.*;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.SparseArray;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
+import android.graphics.*;
+import android.text.method.*;
+import android.text.*;
+import android.hardware.*;
 import org.godotengine.godot.input.*;
 //android.os.Build
 
@@ -627,5 +634,22 @@ public class GodotIO {
 	public String getUniqueID() {
 
 		return unique_id;
+	}
+
+	public int[] getWindowInset() {
+		// Unified api is only available with API level 28
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			DisplayCutout cutout = activity.getWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+			if (cutout == null) {
+				// We have no cutout
+				return new int[] { 0, 0, 0, 0 };
+			}
+
+			return new int[] { cutout.getSafeInsetLeft(), cutout.getSafeInsetTop(), cutout.getSafeInsetRight(), cutout.getSafeInsetBottom() };
+		}
+
+		// We have no cutout api, this does NOT mean that we have no display cutout but we have no
+		// unique way to query that
+		return new int[] { 0, 0, 0, 0 };
 	}
 }
