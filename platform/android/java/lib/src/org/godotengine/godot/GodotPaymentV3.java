@@ -35,9 +35,13 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Currency;
+
 import org.godotengine.godot.payments.PaymentsManager;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.NumberFormat;
 
 public class GodotPaymentV3 extends Godot.SingletonBase {
 
@@ -65,7 +69,7 @@ public class GodotPaymentV3 extends Godot.SingletonBase {
 
 	public GodotPaymentV3(Activity p_activity) {
 
-		registerClass("GodotPayments", new String[] { "purchase", "setPurchaseCallbackId", "setPurchaseValidationUrlPrefix", "setTransactionId", "getSignature", "consumeUnconsumedPurchases", "requestPurchased", "setAutoConsume", "consume", "querySkuDetails", "isConnected" });
+		registerClass("GodotPayments", new String[] { "purchase", "setPurchaseCallbackId", "setPurchaseValidationUrlPrefix", "setTransactionId", "getSignature", "consumeUnconsumedPurchases", "requestPurchased", "setAutoConsume", "consume", "querySkuDetails", "isConnected", "applyCurrency" });
 		activity = (Godot)p_activity;
 		mPaymentManager = activity.getPaymentsManager();
 		mPaymentManager.setBaseSingleton(this);
@@ -226,5 +230,12 @@ public class GodotPaymentV3 extends Godot.SingletonBase {
 
 	public void errorSkuDetail(String errorMessage) {
 		GodotLib.calldeferred(purchaseCallbackId, "sku_details_error", new Object[] { errorMessage });
+	}
+
+	public String applyCurrency(String currencyCode, float price){
+		Currency currency = Currency.getInstance(currencyCode);
+		NumberFormat format = NumberFormat.getCurrencyInstance();
+		format.setCurrency(currency);
+		return format.format(price);
 	}
 }
