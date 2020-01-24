@@ -44,6 +44,32 @@
 class GodotJavaWrapper;
 class GodotIOJavaWrapper;
 
+typedef void (*GFXInitFunc)(void *ud, bool gl2);
+typedef int (*OpenURIFunc)(const String &);
+typedef String (*GetUserDataDirFunc)();
+typedef String (*GetLocaleFunc)();
+typedef void (*SetClipboardFunc)(const String &);
+typedef String (*GetClipboardFunc)();
+typedef String (*GetModelFunc)();
+typedef int (*GetScreenDPIFunc)();
+typedef String (*GetUniqueIDFunc)();
+typedef void (*ShowVirtualKeyboardFunc)(const String &);
+typedef void (*HideVirtualKeyboardFunc)();
+typedef void (*SetScreenOrientationFunc)(int);
+typedef String (*GetSystemDirFunc)(int);
+typedef int (*GetGLVersionCodeFunc)();
+typedef Rect2 (*GetWindowInsetFunc)();
+
+typedef void (*VideoPlayFunc)(const String &);
+typedef bool (*VideoIsPlayingFunc)();
+typedef void (*VideoPauseFunc)();
+typedef void (*VideoStopFunc)();
+typedef void (*SetKeepScreenOnFunc)(bool p_enabled);
+typedef void (*AlertFunc)(const String &, const String &);
+typedef int (*VirtualKeyboardHeightFunc)();
+typedef bool (*RequestPermissionFunc)(const String &);
+typedef void (*VibrateFunc)(int);
+
 class OS_Android : public OS_Unix {
 public:
 	struct TouchPos {
@@ -95,6 +121,32 @@ private:
 
 	//PowerAndroid *power_manager_func;
 
+	OpenURIFunc open_uri_func;
+	GetUserDataDirFunc get_user_data_dir_func;
+	GetLocaleFunc get_locale_func;
+	SetClipboardFunc set_clipboard_func;
+	GetClipboardFunc get_clipboard_func;
+	GetModelFunc get_model_func;
+	GetScreenDPIFunc get_screen_dpi_func;
+	ShowVirtualKeyboardFunc show_virtual_keyboard_func;
+	HideVirtualKeyboardFunc hide_virtual_keyboard_func;
+	VirtualKeyboardHeightFunc get_virtual_keyboard_height_func;
+	SetScreenOrientationFunc set_screen_orientation_func;
+	GetUniqueIDFunc get_unique_id_func;
+	GetSystemDirFunc get_system_dir_func;
+	GetGLVersionCodeFunc get_gl_version_code_func;
+	GetWindowInsetFunc get_window_inset_func;
+
+	VideoPlayFunc video_play_func;
+	VideoIsPlayingFunc video_is_playing_func;
+	VideoPauseFunc video_pause_func;
+	VideoStopFunc video_stop_func;
+	SetKeepScreenOnFunc set_keep_screen_on_func;
+	AlertFunc alert_func;
+	RequestPermissionFunc request_permission_func;
+	VibrateFunc vibrate_func;
+
+	//PowerAndroid *power_manager;
 	int video_driver_index;
 
 public:
@@ -162,6 +214,7 @@ public:
 	virtual void show_virtual_keyboard(const String &p_existing_text, const Rect2 &p_screen_rect = Rect2(), int p_max_input_length = -1);
 	virtual void hide_virtual_keyboard();
 	virtual int get_virtual_keyboard_height() const;
+	virtual Rect2 get_window_inset() const;
 
 	void set_opengl_extensions(const char *p_gl_extensions);
 	void set_display_size(Size2 p_size);
@@ -206,7 +259,7 @@ public:
 	void vibrate_handheld(int p_duration_ms);
 
 	virtual bool _check_internal_feature_support(const String &p_feature);
-	OS_Android(GodotJavaWrapper *p_godot_java, GodotIOJavaWrapper *p_godot_io_java, bool p_use_apk_expansion);
+	OS_Android(GFXInitFunc p_gfx_init_func, void *p_gfx_init_ud, OpenURIFunc p_open_uri_func, GetUserDataDirFunc p_get_user_data_dir_func, GetLocaleFunc p_get_locale_func, GetModelFunc p_get_model_func, GetScreenDPIFunc p_get_screen_dpi_func, ShowVirtualKeyboardFunc p_show_vk, HideVirtualKeyboardFunc p_hide_vk, VirtualKeyboardHeightFunc p_vk_height_func, SetScreenOrientationFunc p_screen_orient, GetUniqueIDFunc p_get_unique_id, GetSystemDirFunc p_get_sdir_func, GetGLVersionCodeFunc p_get_gl_version_func, VideoPlayFunc p_video_play_func, VideoIsPlayingFunc p_video_is_playing_func, VideoPauseFunc p_video_pause_func, VideoStopFunc p_video_stop_func, SetKeepScreenOnFunc p_set_keep_screen_on_func, AlertFunc p_alert_func, SetClipboardFunc p_set_clipboard, GetClipboardFunc p_get_clipboard, RequestPermissionFunc p_request_permission, bool p_use_apk_expansion, VibrateFunc vibrate_func, GetWindowInsetFunc p_get_window_inset_func);
 	~OS_Android();
 };
 
