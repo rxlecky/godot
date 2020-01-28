@@ -570,9 +570,16 @@ int OS_Android::get_virtual_keyboard_height() const {
 }
 
 Rect2 OS_Android::get_window_inset() const {
+	Size2 window_size = get_window_size();
+
 	if (get_window_inset_func) {
 		return get_window_inset_func();
 	}
+
+	return Rect2(
+			0, 0,
+			window_size.width,
+			window_size.height);
 }
 
 void OS_Android::show_virtual_keyboard(const String &p_existing_text, const Rect2 &p_screen_rect, int p_max_input_length) {
