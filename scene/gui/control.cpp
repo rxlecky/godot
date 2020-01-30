@@ -199,10 +199,6 @@ Size2 Control::get_combined_minimum_size() const {
 	return data.minimum_size_cache;
 }
 
-Size2 Control::_edit_get_minimum_size() const {
-
-	return get_combined_minimum_size();
-}
 
 #ifdef DEBUG_ENABLED
 
@@ -224,8 +220,7 @@ void Control::_draw_debug_area() {
 			break;
 		}
 		default: {
-			ERR_EXPLAIN("Invalid mouse filter");
-			ERR_FAIL();
+			ERR_FAIL_MSG("Invalid mouse filter");
 		}
 	}
 
