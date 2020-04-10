@@ -2549,6 +2549,17 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 		evaluator->connect("evaluate", this, "_print_expression");
 		evaluator->connect("add_watch", this, "_watch_expression");
 
+		watches = memnew(ScriptWatches(this));
+		watches->set_name("Watches");
+		watches->connect("watch_added", this, "_add_watch");
+		watches->connect("expression_updated", this, "_update_watch_expression");
+		watches->connect("lock_updated", this, "_update_watch_lock");
+		watches->connect("tracking_updated", this, "_update_watch_tracking");
+		watches->connect("watch_removed", this, "_remove_watch");
+		watches->disable(true);
+		debugger_tabs->add_child(watches);
+		refresh_watches_timeout = EDITOR_DEF("debugger/watches_refresh_interval", 0.2);
+
 		server.instance();
 
 		pending_in_queue = 0;
@@ -2558,20 +2569,6 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 		breaked = false;
 
 		tabs->add_child(dbg);
-	}
-
-	{ //watches
-		watches = memnew(ScriptWatches(this));
-		watches->set_name("Watches");
-		watches->connect("watch_added", this, "_add_watch");
-		watches->connect("expression_updated", this, "_update_watch_expression");
-		watches->connect("lock_updated", this, "_update_watch_lock");
-		watches->connect("tracking_updated", this, "_update_watch_tracking");
-		watches->connect("watch_removed", this, "_remove_watch");
-		tabs->add_child(watches);
-
-		watches->disable(true);
-		refresh_watches_timeout = EDITOR_DEF("debugger/watches_refresh_interval", 0.2);
 	}
 
 	{ //errors
