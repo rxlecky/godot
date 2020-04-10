@@ -250,6 +250,7 @@ ExpressionEvaluator::ExpressionEvaluator() {
 	log_label->set_v_size_flags(SIZE_EXPAND_FILL);
 	log_label->push_font(mono_font);
 	log_label->set_scroll_follow(true);
+	log_label->set_selection_enabled(true);
 	log_label->connect("gui_input", this, "_log_input");
 	add_child(log_label);
 
