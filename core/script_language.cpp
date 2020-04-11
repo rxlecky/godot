@@ -615,7 +615,7 @@ ScriptDebugger::ExpressionContext ScriptDebugger::get_expression_context(int p_s
 	List<Variant> vals;
 	List<String> vars;
 
-	if (p_stack_level > 0) {
+	if (p_stack_level >= 0) {
 		context.base = break_lang->debug_get_stack_level_instance(p_stack_level)->get_owner();
 
 		break_lang->debug_get_stack_level_locals(p_stack_level, &vars, &vals);
