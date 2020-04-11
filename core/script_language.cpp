@@ -453,7 +453,8 @@ void ScriptDebugger::set_watch_expression(int p_stack_level, int p_index, const 
 	}
 
 	if (members_used) {
-		watch.base_id = lang->debug_get_stack_level_instance(p_stack_level)->get_owner()->get_instance_id();
+		ScriptInstance *stack_level_instance = lang->debug_get_stack_level_instance(p_stack_level);
+		watch.base_id = stack_level_instance ? stack_level_instance->get_owner()->get_instance_id() : 0;
 	} else {
 		watch.base_id = 0;
 	}
