@@ -530,14 +530,6 @@ String ScriptDebugger::get_watch_error_text(int p_index) const {
 }
 
 bool ScriptDebugger::_evaluate_watches(int p_stack_level, int p_watch) {
-	if (watches.size() == 0) {
-		return false;
-	}
-
-	if (evaluate_watches_mutex->try_lock() != OK) {
-		return false;
-	}
-
 	int from = p_watch;
 	int to = p_watch + 1;
 	if (p_watch == -1) {
@@ -603,7 +595,6 @@ bool ScriptDebugger::_evaluate_watches(int p_stack_level, int p_watch) {
 			data.dirty = true;
 		}
 	}
-	evaluate_watches_mutex->unlock();
 
 	return tracking_watch_changed;
 }
@@ -689,7 +680,7 @@ ScriptDebugger::ScriptDebugger() {
 	singleton = this;
 	lines_left = -1;
 	depth = -1;
-	evaluate_watches_mutex = Mutex::create();
+	evaluate_watches_safe_count = 0;
 	break_lang = NULL;
 }
 
