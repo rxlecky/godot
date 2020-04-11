@@ -548,7 +548,7 @@ bool ScriptDebugger::_evaluate_watches(int p_stack_level, int p_watch) {
 	int inverse_stack_level = lang->debug_get_stack_level_count() - p_stack_level - 1;
 	bool executing_script = lang->debug_get_stack_level_count() > 0;
 	ObjectID script_owner_id = 0;
-	ExpressionContext context;
+	ExpressionContext context = get_expression_context(p_stack_level);
 
 	if (executing_script) {
 		ERR_FAIL_NULL_V(lang, false);
@@ -564,7 +564,6 @@ bool ScriptDebugger::_evaluate_watches(int p_stack_level, int p_watch) {
 		//
 		// Also we currently identify vars by their name. In GDScript this doesn't pose an issue since vars must
 		// have a unique name across the whole function, but can be an issue in other languages
-		context = get_expression_context(p_stack_level);
 	}
 
 	bool tracking_watch_changed = false;
