@@ -265,7 +265,7 @@ void ScriptWatches::_remove_watch(ScriptWatch *p_watch) {
 	int id = p_watch->id;
 
 	watches.remove(id - 1);
-	memdelete(p_watch);
+	p_watch->queue_delete();
 	_update_watch_ids(id - 1);
 }
 
