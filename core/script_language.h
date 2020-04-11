@@ -428,7 +428,8 @@ class ScriptDebugger {
 
 	ScriptLanguage *break_lang;
 
-	Mutex *evaluate_watches_mutex;
+	uint32_t evaluate_watches_safe_count;
+	bool _evaluate_watches(int p_stack_level, int p_watch);
 
 protected:
 	struct WatchData {
@@ -443,8 +444,6 @@ protected:
 	};
 
 	Vector<WatchData> watches;
-
-	bool _evaluate_watches(int p_stack_level, int p_watch);
 
 	struct ExpressionContext {
 		Object *base;
@@ -512,11 +511,15 @@ public:
 };
 
 _ALWAYS_INLINE_ bool ScriptDebugger::evaluate_watches(int p_stack_level, int p_watch) {
-	if (watches.size() == 0) {
+	if (watches.size() < 1 || evaluate_watches_safe_count > 0) {
 		return false;
 	}
 
-	return _evaluate_watches(p_stack_level, p_watch);
+	atomic_increment(&evaluate_watches_safe_count);
+	bool ret = _evaluate_watches(p_stack_level, p_watch);
+	atomic_decrement(&evaluate_watches_safe_count);
+
+	return ret;
 }
 
 #endif
