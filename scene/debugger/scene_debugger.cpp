@@ -2440,14 +2440,17 @@ void RuntimeNodeSelect::_reset_camera_2d() {
 	Window *root = SceneTree::get_singleton()->get_root();
 	Camera2D *game_camera = root->is_camera_2d_override_enabled() ? root->get_overriden_camera_2d() : root->get_camera_2d();
 	if (game_camera) {
-		view_2d_offset = game_camera->get_camera_screen_center();
+		// Ideally we should be using Camera2D::get_camera_transform() but it's not so this hack will have to do for now.
+		view_2d_offset = game_camera->get_camera_screen_center() - (0.5 * root->get_visible_rect().size);
 	} else {
-		view_2d_offset = root->get_visible_rect().get_center();
+		view_2d_offset = Vector2();
 	}
 
 	view_2d_zoom = 1;
 
-	_update_view_2d();
+	if (root->is_camera_2d_override_enabled()) {
+		_update_view_2d();
+	}
 }
 
 void RuntimeNodeSelect::_update_view_2d() {
@@ -2455,6 +2458,7 @@ void RuntimeNodeSelect::_update_view_2d() {
 	ERR_FAIL_COND(!root->is_camera_2d_override_enabled());
 
 	Camera2D *override_camera = root->get_override_camera_2d();
+	override_camera->set_anchor_mode(Camera2D::ANCHOR_MODE_FIXED_TOP_LEFT);
 	override_camera->set_zoom(Vector2(view_2d_zoom, view_2d_zoom));
 	override_camera->set_position(view_2d_offset);
 
@@ -2906,7 +2910,7 @@ void RuntimeNodeSelect::_reset_camera_3d() {
 	Window *root = SceneTree::get_singleton()->get_root();
 	Camera3D *game_camera = root->is_camera_3d_override_enabled() ? root->get_overriden_camera_3d() : root->get_camera_3d();
 	if (game_camera) {
-		Transform3D transform = game_camera->get_global_transform();
+		Transform3D transform = game_camera->get_camera_transform();
 		transform.translate_local(0, 0, -cursor.distance);
 		cursor.pos = transform.origin;
 
