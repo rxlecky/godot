@@ -2438,7 +2438,7 @@ void RuntimeNodeSelect::_zoom_callback(float p_zoom_factor, Vector2 p_origin, Re
 
 void RuntimeNodeSelect::_reset_camera_2d() {
 	Window *root = SceneTree::get_singleton()->get_root();
-	Camera2D *game_camera = root->is_camera_2d_override_enabled() ? root->get_overriden_camera_2d() : root->get_camera_2d();
+	Camera2D *game_camera = root->is_camera_2d_override_enabled() ? root->get_overridden_camera_2d() : root->get_camera_2d();
 	if (game_camera) {
 		// Ideally we should be using Camera2D::get_camera_transform() but it's not so this hack will have to do for now.
 		view_2d_offset = game_camera->get_camera_screen_center() - (0.5 * root->get_visible_rect().size);
@@ -2908,7 +2908,7 @@ void RuntimeNodeSelect::_reset_camera_3d() {
 
 	cursor = Cursor();
 	Window *root = SceneTree::get_singleton()->get_root();
-	Camera3D *game_camera = root->is_camera_3d_override_enabled() ? root->get_overriden_camera_3d() : root->get_camera_3d();
+	Camera3D *game_camera = root->is_camera_3d_override_enabled() ? root->get_overridden_camera_3d() : root->get_camera_3d();
 	if (game_camera) {
 		Transform3D transform = game_camera->get_camera_transform();
 		transform.translate_local(0, 0, -cursor.distance);

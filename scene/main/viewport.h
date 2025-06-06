@@ -533,7 +533,7 @@ public:
 #if DEBUG_ENABLED
 	void enable_camera_2d_override(bool p_enable);
 	bool is_camera_2d_override_enabled() const;
-	Camera2D *get_overriden_camera_2d() const;
+	Camera2D *get_overridden_camera_2d() const;
 	Camera2D *get_override_camera_2d() const;
 #endif // DEBUG_ENABLED
 
@@ -739,15 +739,15 @@ private:
 	class CameraOverride {
 	private:
 		bool enabled = false;
-		ObjectID overriden_camera_id;
+		ObjectID overridden_camera_id;
 
 	public:
 		bool is_enabled() const;
 		void enable(Viewport *p_viewport, const T *p_current_camera);
 		void disable(T *p_current_camera);
 
-		void set_overriden_camera(const T *p_camera);
-		T *get_overriden_camera() const;
+		void set_overridden_camera(const T *p_camera);
+		T *get_overridden_camera() const;
 	};
 #endif // DEBUG_ENABLED
 
@@ -831,7 +831,7 @@ public:
 #if DEBUG_ENABLED
 	void enable_camera_3d_override(bool p_enable);
 	bool is_camera_3d_override_enabled() const;
-	Camera3D *get_overriden_camera_3d() const;
+	Camera3D *get_overridden_camera_3d() const;
 	Camera3D *get_override_camera_3d() const;
 #endif // DEBUG_ENABLED
 

@@ -1201,11 +1201,13 @@ bool Viewport::is_camera_2d_override_enabled() const {
 	ERR_READ_THREAD_GUARD_V(false);
 	return camera_2d_override.is_enabled();
 }
-Camera2D *Viewport::get_overriden_camera_2d() const {
+
+Camera2D *Viewport::get_overridden_camera_2d() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
 	ERR_FAIL_COND_V(!camera_2d_override.is_enabled(), nullptr);
-	return camera_2d_override.get_overriden_camera();
+	return camera_2d_override.get_overridden_camera();
 }
+
 Camera2D *Viewport::get_override_camera_2d() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
 	ERR_FAIL_COND_V(!camera_2d_override.is_enabled(), nullptr);
@@ -4188,7 +4190,7 @@ void Viewport::_audio_listener_2d_remove(AudioListener2D *p_audio_listener) {
 void Viewport::_camera_2d_set(Camera2D *p_camera_2d) {
 #if DEBUG_ENABLED
 	if (is_camera_2d_override_enabled()) {
-		camera_2d_override.set_overriden_camera(p_camera_2d);
+		camera_2d_override.set_overridden_camera(p_camera_2d);
 		return;
 	}
 #endif // DEBUG_ENABLED
@@ -4429,7 +4431,7 @@ void Viewport::_camera_3d_set(Camera3D *p_camera) {
 
 #if DEBUG_ENABLED
 	if (is_camera_3d_override_enabled()) {
-		camera_3d_override.set_overriden_camera(p_camera);
+		camera_3d_override.set_overridden_camera(p_camera);
 		return;
 	}
 #endif // DEBUG_ENABLED
@@ -4481,6 +4483,7 @@ void Viewport::_camera_3d_make_next_current(Camera3D *p_exclude) {
 		E->make_current();
 	}
 }
+
 #if DEBUG_ENABLED
 void Viewport::enable_camera_3d_override(bool p_enable) {
 	ERR_MAIN_THREAD_GUARD;
@@ -4497,11 +4500,12 @@ bool Viewport::is_camera_3d_override_enabled() const {
 	return camera_3d_override.is_enabled();
 }
 
-Camera3D *Viewport::get_overriden_camera_3d() const {
+Camera3D *Viewport::get_overridden_camera_3d() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
 	ERR_FAIL_COND_V(!camera_3d_override.is_enabled(), nullptr);
-	return camera_3d_override.get_overriden_camera();
+	return camera_3d_override.get_overridden_camera();
 }
+
 Camera3D *Viewport::get_override_camera_3d() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
 	ERR_FAIL_COND_V(!camera_3d_override.is_enabled(), nullptr);
@@ -5471,9 +5475,9 @@ void Viewport::CameraOverride<T>::enable(Viewport *p_viewport, const T *p_curren
 	p_viewport->add_child(override_camera, false, Node::INTERNAL_MODE_BACK);
 
 	override_camera->make_current();
-	set_overriden_camera(p_current_camera);
+	set_overridden_camera(p_current_camera);
 
-	// Call to make the override camera current must happen before we enable the override to prevent the override mechanism from kicking in
+	// Call to make the override camera current must happen before we enable the override to prevent the override mechanism from kicking in.
 	enabled = true;
 }
 
@@ -5483,32 +5487,32 @@ void Viewport::CameraOverride<T>::disable(T *p_current_camera) {
 		return;
 	}
 
-	// Call to make the overridden camera current must happen after we disable the override to prevent the override mechanism from kicking in
+	// Call to make the overridden camera current must happen after we disable the override to prevent the override mechanism from kicking in.
 	enabled = false;
 
-	T *overriden_camera = get_overriden_camera();
-	if (overriden_camera) {
-		overriden_camera->make_current();
+	T *overridden_camera = get_overridden_camera();
+	if (overridden_camera) {
+		overridden_camera->make_current();
 	} else {
 		p_current_camera->clear_current();
 	}
 
 	p_current_camera->queue_free();
-	overriden_camera_id = ObjectID();
+	overridden_camera_id = ObjectID();
 }
 
 template <class T>
-void Viewport::CameraOverride<T>::set_overriden_camera(const T *p_camera) {
-	overriden_camera_id = p_camera ? p_camera->get_instance_id() : ObjectID();
+void Viewport::CameraOverride<T>::set_overridden_camera(const T *p_camera) {
+	overridden_camera_id = p_camera ? p_camera->get_instance_id() : ObjectID();
 }
 
 template <class T>
-T *Viewport::CameraOverride<T>::get_overriden_camera() const {
-	return ObjectDB::get_instance<T>(overriden_camera_id);
+T *Viewport::CameraOverride<T>::get_overridden_camera() const {
+	return ObjectDB::get_instance<T>(overridden_camera_id);
 }
 
 // Explicit template instantiation to allow template definitions inside cpp file
-// and prevent instantiation using other than the desired camera types
+// and prevent instantiation using other than the desired camera types.
 template class Viewport::CameraOverride<Camera2D>;
 template class Viewport::CameraOverride<Camera3D>;
 #endif // DEBUG_ENABLED
